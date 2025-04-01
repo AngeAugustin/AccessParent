@@ -14,9 +14,10 @@ export default function NavBar() {
       <TouchableOpacity style={styles.button} onPress={() => router.push('/EducateursFolder/Educateurs')}>
         <Icon name="school" size={30} color="#fff" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => router.push('/AccompsFolder/Accompagnateurs')}>
-        <Icon name="hand-left" size={30} color="#fff" />
-      </TouchableOpacity>
+     {/* <TouchableOpacity style={styles.button} onPress={() => router.push('/AccompsFolder/Accompagnateurs')}>
+            <Icon name="hand-left" size={30} color="#fff" />
+        </TouchableOpacity> */}
+
       <TouchableOpacity style={styles.button} onPress={() => router.push('/PaiementsFolder/Paiements')}>
         <Icon name="wallet" size={30} color="#fff" />
       </TouchableOpacity>

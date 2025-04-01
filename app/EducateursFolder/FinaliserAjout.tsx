@@ -115,89 +115,76 @@ export default function FinaliserAjout() {
 
   const dureeList = ['1 mois', '2 mois', '3 mois', '4 mois', '5 mois', '6 mois'];
 
-  const generateReference = () => {
-  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const digits = '0123456789';
-  let reference = '';
+  const handleSubmit = async () => {
+    // Vérification des champs vides
+    if (!selectedChild || !selectedDuree || !selectedSeance1) {
+      Alert.alert('Erreur', 'Veuillez remplir tous les champs');
+      return;
+    }
   
-  // Générer 4 lettres aléatoires
-  for (let i = 0; i < 4; i++) {
-    reference += letters.charAt(Math.floor(Math.random() * letters.length));
-  }
-  
-  // Générer 8 chiffres aléatoires
-  for (let i = 0; i < 8; i++) {
-    reference += digits.charAt(Math.floor(Math.random() * digits.length));
-  }
-
-  return reference;
-};
-
-const handleSubmit = async () => {
-  if (!selectedChild || !selectedDuree || !selectedSeance1 ) {
-    Alert.alert('Veuillez remplir tous les champs');
-    return;
-  }
-
-  const reference = generateReference(); // Générer la référence unique
-
-  const payload = {
-    Reference_tutorat: reference,
-    NPI_parent: user.NPI,
-    NPI_educateur: educateur.NPI,
-    NPI_enfant: selectedChild,
-    Duree_tutorat: selectedDuree,
-    Seance1: selectedSeance1,
-    Seance2: selectedSeance2
-  };
-
-  try {
-    const response = await fetch('https://access-backend-a961a1f4abb2.herokuapp.com/api/add_tutorat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-
-    // Vérifiez le code de statut HTTP pour détecter les erreurs avant de traiter la réponse
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Erreur HTTP:', response.status, errorData);
+    // Recherche de l'enfant sélectionné dans la liste pour obtenir le NPI_enfant
+    const selectedChildData = childrenList.find(child => child.NPI_enfant === selectedChild);
+    if (!selectedChildData) {
+      Alert.alert('Erreur', 'Enfant sélectionné introuvable');
       return;
     }
 
-    // Traitement de la réponse réussie
-    const data = await response.json();
-    console.log('Réponse de l\'API:', data);
+    const reference = selectedChildData.NPI_enfant.substring(0, 5) + educateur.NPI.substring(0, 5);  
 
-    // Vérifiez si le message est présent
-    if (data && data.Message) {
-      console.log('Tutorat ajouté avec succès:', data.Message);
-      console.log('Référence tutorat:', data.Reference_tutorat);
+    const payload = {
+      Reference_tutorat: reference,
+      NPI_parent: user.NPI,
+      NPI_educateur: educateur.NPI,
+      NPI_enfant: selectedChildData.NPI_enfant,  
+      Duree_tutorat: selectedDuree,
+      Seance1: selectedSeance1,
+      Seance2: selectedSeance2
+    };
+  
+    try {
+      const response = await fetch('https://access-backend-a961a1f4abb2.herokuapp.com/api/add_tutorat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        Alert.alert('Erreur', data.error || 'Une erreur est survenue lors de l\'ajout du tutorat');
+        return;
+      }
 
-      // Afficher une alerte de succès
-      Alert.alert(
-        'Tutorat ajouté', // Titre de l'alerte
-        'Le tutorat a été ajouté avec succès !', // Message de l'alerte
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              // Rediriger après avoir cliqué sur "OK"
-              router.push('/EducateursFolder/Educateurs');  // Changez le chemin vers la page de votre choix
+      if (data && data.Message) {
+        console.log('Tutorat ajouté avec succès:', data.Message);
+        console.log('Référence tutorat:', data.Reference_tutorat);
+
+        Alert.alert(
+          'Tutorat ajouté', 
+          'Le tutorat a été ajouté avec succès !', 
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                router.push('/EducateursFolder/Educateurs');  
+              }
             }
-          }
-        ],
-        { cancelable: false } // L'alerte ne peut pas être fermée en dehors de l'option OK
-      );
-    } else {
-      console.error('Erreur lors de l\'ajout du tutorat', data.error || 'Message d\'erreur inconnu');
+          ],
+          { cancelable: false } 
+        );
+      } else {
+        console.error('Erreur lors de l\'ajout du tutorat', data.error || 'Message d\'erreur inconnu');
+        Alert.alert('Erreur', 'Une erreur est survenue lors de l\'ajout du tutorat');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la requête API', error);
+      Alert.alert('Erreur', 'Une erreur est survenue lors de la requête API');
     }
-  } catch (error) {
-    console.error('Erreur lors de la requête API', error);
-  }
-};
+  };
+  
+  
 
 
   return (

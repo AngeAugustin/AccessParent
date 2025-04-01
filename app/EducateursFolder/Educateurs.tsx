@@ -1,17 +1,70 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import * as SecureStore from 'expo-secure-store'; 
+
+// Définir une interface pour les éducateurs
+interface Educateur {
+  NPI_educateur: string;
+  Name: string;
+  Firstname: string;
+  Matiere: string;
+}
 
 export default function Educateurs() {
   const router = useRouter();
+  const [user, setUser] = useState({
+      NPI: '',
+  });
+  const [educateursData, setEducateursData] = useState<Educateur[]>([]);  // Typage explicite des données des éducateurs
+  const [selectedEducateurNPI, setSelectedEducateurNPI] = useState<string>(''); // Variable pour stocker le NPI sélectionné
 
-  // Exemple de données pour le tableau des éducateurs avec des identifiants uniques
-  const educateursData = [
-    { id: '1', nomPrenom: 'Jean Dupont', matière: 'SVT' },
-    { id: '2', nomPrenom: 'Paul Lefevre', matière: 'Anglais' },
-    { id: '3', nomPrenom: 'Marie Claire', matière: 'Histoire-Géographie' },
-  ];
+  useEffect(() => {
+      // Fonction pour récupérer les données utilisateur depuis SecureStore
+      const fetchUserData = async () => {
+        try {
+          const userData = await SecureStore.getItemAsync('user');
+          if (userData) {
+            const parsedUser = JSON.parse(userData);
+            setUser({
+              NPI: parsedUser.NPI || '',
+            });
+          }
+        } catch (error) {
+          console.error('Erreur lors de la récupération des données utilisateur', error);
+        }
+      };
+
+      fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    // Fonction pour récupérer les éducateurs depuis l'API après avoir récupéré le NPI
+    const fetchEducateursData = async () => {
+      if (user.NPI) {
+        try {
+          const response = await fetch(`https://access-backend-a961a1f4abb2.herokuapp.com/api/get_tutorat/${user.NPI}`);
+          const data = await response.json();
+
+          // Mise à jour de l'état avec les données récupérées de l'API
+          setEducateursData(data);
+        } catch (error) {
+          console.error('Erreur lors de la récupération des données des éducateurs', error);
+        }
+      }
+    };
+
+    if (user.NPI) {
+      fetchEducateursData();
+    }
+  }, [user.NPI]);
+
+  // Fonction pour gérer la redirection vers la page DetailsEducateurs
+  const handleDetailsPress = (NPI: string) => {
+    setSelectedEducateurNPI(NPI); // Mettre à jour la variable d'état avec le NPI de l'éducateur
+    router.push(`/EducateursFolder/DetailsEducateurs?NPI=${NPI}`); // Redirection avec le NPI
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -36,13 +89,15 @@ export default function Educateurs() {
           <Text style={[styles.tableHeaderText, styles.columnDetails]}>Détails</Text>
         </View>
 
-        {educateursData.map((educateur) => (
-          <View key={educateur.id} style={styles.tableRow}>
-            <Text style={[styles.tableCell, styles.columnEducateur]}>{educateur.nomPrenom}</Text>
-            <Text style={[styles.tableCell, styles.columnMatiere]}>{educateur.matière}</Text>
+        {educateursData.map((educateur, index) => (
+          <View key={`${educateur.NPI_educateur}-${index}`} style={styles.tableRow}>
+            <Text style={[styles.tableCell, styles.columnEducateur]}>
+              {`${educateur.Firstname} ${educateur.Name}`}
+            </Text>
+            <Text style={[styles.tableCell, styles.columnMatiere]}>{educateur.Matiere}</Text>
             <TouchableOpacity 
               style={[styles.detailsButton, styles.columnDetails]}
-              onPress={() => router.push(`/EducateursFolder/DetailsEducateurs`)} // Redirection vers la page DetailsEducateurs
+              onPress={() => handleDetailsPress(educateur.NPI_educateur)}
             >
               <Icon name="info-outline" size={24} color="#0a4191" />
             </TouchableOpacity>

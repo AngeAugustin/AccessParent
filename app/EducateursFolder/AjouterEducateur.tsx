@@ -22,7 +22,7 @@ const EducatorCard: React.FC<EducatorCardProps> = ({ npi, name, subject, rating,
   const handleInfoEducator = () => {
     router.push(`/EducateursFolder/EducateursNC?npi=${npi}`);
   };
-
+ 
   return (
     <View style={styles.card}>
       <View style={styles.cardContent}>
@@ -69,17 +69,24 @@ export default function AjouterEducateur() {
   useEffect(() => {
     const fetchEducators = async () => {
       try {
-        const response = await fetch('https://access-backend-a961a1f4abb2.herokuapp.com/api/get_all_educateurs'); // Remplace par ton IP et URL
+        const response = await fetch('https://access-backend-a961a1f4abb2.herokuapp.com/api/get_all_educateurs');
         const data = await response.json();
-        
-        const formattedData = data.map((educator: any) => ({
+    
+        console.log("Données reçues de l'API :", data);
+    
+        if (!Array.isArray(data)) {
+          console.error("La réponse de l'API n'est pas un tableau :", data);
+          throw new Error(data.message || "Données inattendues");
+        }
+    
+        const formattedData = data.map((educator) => ({
           name: `${educator.Firstname} ${educator.Name}`,
           subject: educator.Matiere,
-          rating: educator.Etoiles ?? 0, // Gestion de valeur null
-          zone: 'Non spécifié', // Zone non retournée par l’API
+          rating: educator.Etoiles ?? 0, 
+          zone: 'Non spécifié',
           npi: educator.NPI,
         }));
-
+    
         setEducators(formattedData);
       } catch (error) {
         console.error("Erreur lors de la récupération des éducateurs :", error);
@@ -87,6 +94,7 @@ export default function AjouterEducateur() {
         setLoading(false);
       }
     };
+    
 
     fetchEducators();
   }, []);

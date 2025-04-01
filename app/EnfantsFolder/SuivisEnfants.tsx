@@ -1,16 +1,71 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal } from 'react-native';
-import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal, ActivityIndicator } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Montserrat_400Regular, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
+import { useFonts } from 'expo-font';
+
+// Déclaration du type de l'historique
+interface Historique {
+  Id_seance: string;
+  Date_seance: string;
+  Heure_seance: string;
+  Observation: string;
+  Travail_effectue: string;
+}
 
 export default function DetailsEnfants() {
   const router = useRouter();
   const [isMenuVisible, setMenuVisible] = useState(false); // État pour le menu
+  const { Reference_tutorat } = useLocalSearchParams();
+  const [fontsLoaded] = useFonts({
+    Montserrat_400Regular,
+    Montserrat_700Bold,
+  });
 
-  const details = [
-    { id: '1', date: '15/01/2025', duree: '2 heures', travail: 'Historique', observations: 'Pas mal' },
-    { id: '2', date: '20/12/2024', duree: '2 heures', travail: 'Historique', observations: 'Acceptable.' },
-  ];
+  const [historiques, setHistoriques] = useState<Historique[]>([]); // On change le type ici pour un tableau d'historique
+  const [selectedTravail, setSelectedTravail] = useState<string>(''); // Nouveau state pour stocker le travail effectué sélectionné
+  const [loading, setLoading] = useState<boolean>(true); // Indicateur de chargement
+  const [error, setError] = useState<string>(''); // État pour gérer les erreurs
+
+  useEffect(() => {
+    const fetchHistoriques = async () => {
+      try {
+        const response = await fetch(`https://access-backend-a961a1f4abb2.herokuapp.com/api/get_historique_seance/${Reference_tutorat}`);
+        const data = await response.json();
+
+        if (data.status === 200) {
+          setHistoriques(data.data); // On met directement l'array dans l'état
+        } else {
+          setError('Aucun historique trouvé pour cet enfant.');
+        }
+      } catch (error) {
+        setError('Erreur lors de la récupération des données.');
+      } finally {
+        setLoading(false); // Fin du chargement
+      }
+    };
+
+    if (Reference_tutorat) {
+      fetchHistoriques();
+    }
+  }, [Reference_tutorat]);
+
+  // Si les polices ne sont pas encore chargées ou si les infos ne sont pas encore récupérées
+  if (!fontsLoaded || loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0a4191" />
+        <Text style={styles.loadingText}>Chargement...</Text>
+      </View>
+    );
+  }
+
+  // Fonction pour ouvrir le modal et afficher le travail effectué
+  const handleOpenModal = (travail: string) => {
+    setSelectedTravail(travail);
+    setMenuVisible(true);
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -20,7 +75,7 @@ export default function DetailsEnfants() {
         </View>
       </View>
 
-      <Text style={styles.DetailsTitle}>Historique des séances</Text> 
+      <Text style={styles.DetailsTitle}>Historique des séances</Text>
 
       <View style={styles.tableContainer}>
         <View style={styles.tableHeader}>
@@ -30,20 +85,25 @@ export default function DetailsEnfants() {
           <Text style={[styles.tableHeaderText, styles.columnObservations]}>Observations</Text>
         </View>
 
-        {details.map((detail, index) => (
-          <View key={detail.id} style={styles.tableRow}>
-          <Text style={[styles.tableCell, styles.columnDate]}>{detail.date}</Text>
-          <Text style={[styles.tableCell, styles.columnDuree]}>{detail.duree}</Text>
-          <TouchableOpacity
-            style={[styles.historiqueIcon, styles.columnTravail]}
-            onPress={() => setMenuVisible(true)} // Ouvre le menu
-          >
-            <Icon name="history" size={24} color="#0a4191" />
-          </TouchableOpacity>
-          <Text style={[styles.tableCell, styles.columnObservations]}>{detail.observations}</Text>
-        </View>
-        ))}
-        </View>
+        {/* On affiche le message d'absence de données si historique est vide */}
+        {historiques.length > 0 ? (
+          historiques.map((historique) => (
+            <View key={historique.Id_seance} style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.columnDate]}>{historique.Date_seance}</Text>
+              <Text style={[styles.tableCell, styles.columnDuree]}>{historique.Heure_seance}</Text>
+              <TouchableOpacity
+                style={[styles.historiqueIcon, styles.columnTravail]}
+                onPress={() => handleOpenModal(historique.Travail_effectue)} // Ouvre le menu et passe le travail effectué
+              >
+                <Icon name="history" size={24} color="#0a4191" />
+              </TouchableOpacity>
+              <Text style={[styles.tableCell, styles.columnObservations]}>{historique.Observation}</Text>
+            </View>
+          ))
+        ) : (
+          <Text style={styles.noDataText}>Aucun historique trouvé pour cet enfant.</Text>
+        )}
+      </View>
 
       {/* Modal pour le menu */}
       <Modal
@@ -58,10 +118,7 @@ export default function DetailsEnfants() {
             <ScrollView contentContainerStyle={styles.modalContent}>
               <View style={styles.textContainer}>
                 <Text style={styles.textContent}>
-                  Exemple de travaux effectués : {"\n"}
-                  - Lecture d'un texte narratif. {"\n"}
-                  - Analyse grammaticale. {"\n"}
-                  - Révision des bases en mathématiques.
+                  {selectedTravail || 'Aucun travail effectué à afficher.'} {/* Affiche le travail effectué */}
                 </Text>
               </View>
             </ScrollView>
@@ -84,6 +141,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 15,
     paddingTop: 15,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#0a4191',
+    marginTop: 10,
   },
   header: {
     flexDirection: 'row',
@@ -186,6 +254,12 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     fontFamily: 'Montserrat_400Regular',
     marginTop: 15,
+  },
+  noDataText: {
+    textAlign: 'center',
+    fontSize: 12,
+    color: '#282828',
+    marginTop: 20,
   },
   columnDate: {
     flex: 1,

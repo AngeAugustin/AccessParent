@@ -17,12 +17,12 @@ type Educateur = {
 
 export default function DetailsEducateur() {
   const router = useRouter();
-  const { npi } = useLocalSearchParams();
+  const { NPI } = useLocalSearchParams();
   const [details, setDetails] = useState<Educateur | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`https://access-backend-a961a1f4abb2.herokuapp.com/api/get_educateur/${npi}`)
+    fetch(`https://access-backend-a961a1f4abb2.herokuapp.com/api/get_educateur/${NPI}`)
       .then((res) => res.json())
       .then((data: Educateur) => {
         setDetails(data);
@@ -32,7 +32,7 @@ export default function DetailsEducateur() {
         console.log(err);
         setLoading(false);
       });
-  }, [npi]);
+  }, [NPI]);
 
   const [fontsLoaded] = useFonts({
     Montserrat_400Regular,
