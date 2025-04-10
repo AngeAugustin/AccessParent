@@ -22,17 +22,27 @@ export default function EducateursNC() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`https://access-backend-a961a1f4abb2.herokuapp.com/api/get_educateur/${npi}`)
+    setLoading(true);
+    
+    fetch(`https://access-backend-a961a1f4abb2.herokuapp.com/api/get_info_educ/${npi}`)
       .then((res) => res.json())
-      .then((data: Educateur) => {
-        setDetails(data);
-        setLoading(false);
+      .then((data) => {
+        console.log("Données reçues:", data); // Debugging pour voir la structure
+        if (data.status !== 200 || !data.data || data.data.length === 0) {
+          setDetails(null);
+        } else {
+          setDetails(data.data[0]); // Récupérer le premier élément du tableau
+        }
       })
       .catch((err) => {
-        console.log(err);
+        console.error('Erreur de récupération:', err);
+        setDetails(null);
+      })
+      .finally(() => {
         setLoading(false);
       });
   }, [npi]);
+  
 
   const [fontsLoaded] = useFonts({
     Montserrat_400Regular,

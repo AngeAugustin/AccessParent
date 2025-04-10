@@ -34,7 +34,8 @@ export default function FinaliserAjout() {
   const [selectedDuree, setSelectedDuree] = useState<string>('');
   const [selectedSeance1, setSelectedSeance1] = useState<string>('');
   const [selectedSeance2, setSelectedSeance2] = useState<string>('');
-  const filteredSeance2 = disponibilites.filter(dispo => dispo !== selectedSeance1);
+  const filteredSeance2 = (disponibilites || []).filter(dispo => dispo !== selectedSeance1);
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -53,19 +54,29 @@ export default function FinaliserAjout() {
 
     const fetchEducateurData = async () => {
       try {
-        const response = await fetch(`https://access-backend-a961a1f4abb2.herokuapp.com/api/get_educateur/${npi}`);
+        const response = await fetch(`https://access-backend-a961a1f4abb2.herokuapp.com/api/get_info_educ/${npi}`);
         const data = await response.json();
+        console.log('Données reçues de l\'API:', data); // Ajoute ce log pour debug
+    
+        if (data.status !== 200 || !data.data || data.data.length === 0) {
+          console.error('Aucune information éducateur trouvée');
+          return;
+        }
+    
+        const educateurInfo = data.data[0];
+    
         setEducateur({
-          NPI: data.NPI,
-          Name: data.Name,
-          Firstname: data.Firstname,
-          Matiere: data.Matiere,
-          Etoiles: data.Etoiles,
+          NPI: educateurInfo.NPI || '',
+          Name: educateurInfo.Name || '',
+          Firstname: educateurInfo.Firstname || '',
+          Matiere: educateurInfo.Matiere || '',
+          Etoiles: educateurInfo.Etoiles || 0,
         });
       } catch (error) {
         console.error('Erreur lors de la récupération des données de l’éducateur', error);
       }
     };
+    
 
     const fetchDisponibilites = async () => {
       try {
@@ -183,7 +194,11 @@ export default function FinaliserAjout() {
       Alert.alert('Erreur', 'Une erreur est survenue lors de la requête API');
     }
   };
-  
+  console.log('Disponibilités:', disponibilites);
+console.log('filteredSeance2:', filteredSeance2);
+console.log('Educateur étoiles:', educateur.Etoiles);
+console.log('ChildrenList:', childrenList);
+
   
 
 
@@ -205,9 +220,10 @@ export default function FinaliserAjout() {
         </Text>
         <Text style={styles.professionText}>Enseignant de {educateur.Matiere}</Text>
         <View style={styles.ratingContainer}>
-          {[...Array(Math.floor(educateur.Etoiles))].map((_, index) => (
-            <Text key={index} style={styles.star}>★</Text>
-          ))}
+        {[...Array(Math.max(0, Math.floor(educateur.Etoiles || 0)))].map((_, index) => (
+  <Text key={index} style={styles.star}>★</Text>
+))}
+
           <Text style={styles.ratingText}> {educateur.Etoiles}</Text>
         </View>
       </View>
@@ -223,13 +239,14 @@ export default function FinaliserAjout() {
               onValueChange={(itemValue) => setSelectedChild(itemValue)}
             >
               <Picker.Item label="Choisir un enfant" value="" />
-              {childrenList.map((child) => (
-                <Picker.Item
-                  key={child.NPI_enfant}
-                  label={`${child.Nom_enfant} ${child.Prenom_enfant}`}
-                  value={child.NPI_enfant} // On utilise `NPI_enfant` comme valeur
-                />
-              ))}
+              {(childrenList || []).map((child) => (
+  <Picker.Item
+    key={child.NPI_enfant}
+    label={`${child.Nom_enfant} ${child.Prenom_enfant}`}
+    value={child.NPI_enfant}
+  />
+))}
+
             </Picker>
 
             <Picker
