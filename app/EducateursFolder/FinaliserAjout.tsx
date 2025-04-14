@@ -24,18 +24,24 @@ export default function FinaliserAjout() {
     NPI: '',
     Name: '',
     Firstname: '',
+    Niveau: '',
     Matiere: '',
     Etoiles: 0,
-  });
+    Photo: '', // pour stocker la photo en base64
+  });  
 
   const [childrenList, setChildrenList] = useState<Enfant[]>([]); // Liste des enfants
-
   const [selectedChild, setSelectedChild] = useState<string>(''); // L'ID de l'enfant sélectionné
   const [selectedDuree, setSelectedDuree] = useState<string>('');
   const [selectedSeance1, setSelectedSeance1] = useState<string>('');
   const [selectedSeance2, setSelectedSeance2] = useState<string>('');
   const filteredSeance2 = (disponibilites || []).filter(dispo => dispo !== selectedSeance1);
-
+  const dureeList = ['7 jours', ' 15 jours', '30 jours', '60 jours', '90 jours', '120 jours'];
+  const getTitreEnseignant = (niveau: string) => {
+    if (niveau === 'Cycle I') return 'Professeur Adjoint';
+    if (niveau === 'Cycle II') return 'Professeur Certifié';
+    return niveau;
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -54,29 +60,28 @@ export default function FinaliserAjout() {
 
     const fetchEducateurData = async () => {
       try {
-        const response = await fetch(`https://access-backend-a961a1f4abb2.herokuapp.com/api/get_info_educ/${npi}`);
+        const response = await fetch(`https://access-backend-a961a1f4abb2.herokuapp.com/api/profil/${npi}`);
         const data = await response.json();
-        console.log('Données reçues de l\'API:', data); // Ajoute ce log pour debug
+        console.log('Données profil éducateur:', data);
     
-        if (data.status !== 200 || !data.data || data.data.length === 0) {
-          console.error('Aucune information éducateur trouvée');
+        if (data.error) {
+          console.error('Erreur depuis l\'API profil:', data.error);
           return;
         }
     
-        const educateurInfo = data.data[0];
-    
         setEducateur({
-          NPI: educateurInfo.NPI || '',
-          Name: educateurInfo.Name || '',
-          Firstname: educateurInfo.Firstname || '',
-          Matiere: educateurInfo.Matiere || '',
-          Etoiles: educateurInfo.Etoiles || 0,
+          NPI: npi as string,
+          Name: data.Name || '',
+          Firstname: data.Firstname || '',
+          Niveau: data.Niveau || '',
+          Matiere: data.Matiere || '',
+          Etoiles: data.Etoiles || 0,
+          Photo: data.Photo_educateur || '',
         });
       } catch (error) {
-        console.error('Erreur lors de la récupération des données de l’éducateur', error);
+        console.error('Erreur lors de la récupération des données de l’éducateur (profil)', error);
       }
     };
-    
 
     const fetchDisponibilites = async () => {
       try {
@@ -123,8 +128,6 @@ export default function FinaliserAjout() {
     }
 
   }, [user.NPI, npi]);
-
-  const dureeList = ['1 mois', '2 mois', '3 mois', '4 mois', '5 mois', '6 mois'];
 
   const handleSubmit = async () => {
     // Vérification des champs vides
@@ -195,11 +198,9 @@ export default function FinaliserAjout() {
     }
   };
   console.log('Disponibilités:', disponibilites);
-console.log('filteredSeance2:', filteredSeance2);
-console.log('Educateur étoiles:', educateur.Etoiles);
-console.log('ChildrenList:', childrenList);
-
-  
+  console.log('filteredSeance2:', filteredSeance2);
+  console.log('Educateur étoiles:', educateur.Etoiles);
+  console.log('ChildrenList:', childrenList);
 
 
   return (
@@ -213,16 +214,21 @@ console.log('ChildrenList:', childrenList);
 
       <View style={styles.avatarContainer}>
         <TouchableOpacity style={styles.avatarWrapper}>
-          <Image source={{ uri: 'https://i.postimg.cc/k4MRhY0L/El-ve.png' }} style={styles.avatar} />
+        <Image
+          source={{ uri: `data:image/png;base64,${educateur.Photo}` }}
+          style={styles.avatar}
+        />
         </TouchableOpacity>
         <Text style={styles.nameText}>
           <Text style={styles.boldText}>{educateur.Name} {educateur.Firstname}</Text>
         </Text>
-        <Text style={styles.professionText}>Enseignant de {educateur.Matiere}</Text>
+        <Text style={styles.professionText}>
+            {getTitreEnseignant(educateur.Niveau)} en {educateur.Matiere}
+        </Text>
         <View style={styles.ratingContainer}>
         {[...Array(Math.max(0, Math.floor(educateur.Etoiles || 0)))].map((_, index) => (
-  <Text key={index} style={styles.star}>★</Text>
-))}
+          <Text key={index} style={styles.star}>★</Text>
+        ))}
 
           <Text style={styles.ratingText}> {educateur.Etoiles}</Text>
         </View>

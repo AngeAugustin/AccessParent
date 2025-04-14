@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, ActivityIndicator } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { useFonts } from 'expo-font';   
+import { useFonts } from 'expo-font';
 import { Montserrat_400Regular, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
 
 type Educateur = {
@@ -12,7 +12,8 @@ type Educateur = {
   Experience: string;
   Parcours: string;
   Adresse: string;
-  avatar?: string;
+  Niveau: string;
+  Photo_educateur?: string;
 };
 
 export default function DetailsEducateur() {
@@ -20,18 +21,28 @@ export default function DetailsEducateur() {
   const { NPI } = useLocalSearchParams();
   const [details, setDetails] = useState<Educateur | null>(null);
   const [loading, setLoading] = useState(true);
+  const getTitreEnseignant = (niveau: string) => {
+    if (niveau === 'Cycle I') return 'Professeur Adjoint';
+    if (niveau === 'Cycle II') return 'Professeur Certifié';
+    return niveau;
+  };
+
+  const [fontsLoaded] = useFonts({
+    Montserrat_400Regular,
+    Montserrat_700Bold,
+  });
 
   useEffect(() => {
     setLoading(true);
     
-    fetch(`https://access-backend-a961a1f4abb2.herokuapp.com/api/get_info_educ/${NPI}`)
+    fetch(`https://access-backend-a961a1f4abb2.herokuapp.com/api/profil/${NPI}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("Données reçues:", data); // Debugging pour voir la structure
-        if (data.status !== 200 || !data.data || data.data.length === 0) {
+        console.log("Données reçues:", data);
+        if (data.error) {
           setDetails(null);
         } else {
-          setDetails(data.data[0]); // Récupérer le premier élément du tableau
+          setDetails(data);
         }
       })
       .catch((err) => {
@@ -42,14 +53,8 @@ export default function DetailsEducateur() {
         setLoading(false);
       });
   }, [NPI]);
-  
 
-  const [fontsLoaded] = useFonts({
-    Montserrat_400Regular,
-    Montserrat_700Bold, 
-  });
-
-  if (loading) {
+  if (!fontsLoaded || loading) {
     return <ActivityIndicator size="large" color="#0a4191" style={{ flex: 1, justifyContent: 'center' }} />;
   }
 
@@ -61,6 +66,10 @@ export default function DetailsEducateur() {
     );
   }
 
+  const avatarUri = details.Photo_educateur
+    ? `data:image/jpeg;base64,${details.Photo_educateur}`
+    : 'https://i.postimg.cc/k4MRhY0L/El-ve.png';
+
   return (
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
@@ -68,15 +77,18 @@ export default function DetailsEducateur() {
           <Text style={styles.title}>Détails de l'éducateur</Text>
           <Text style={styles.subtitle}>Quelques informations</Text>
         </View>
-      </View> 
+      </View>
 
-      {/* Avatar et informations utilisateur */}
       <View style={styles.avatarContainer}>
         <TouchableOpacity style={styles.avatarWrapper}>
-          <Image source={{ uri: details.avatar || 'https://i.postimg.cc/k4MRhY0L/El-ve.png' }} style={styles.avatar} />
+          <Image source={{ uri: avatarUri }} style={styles.avatar} />
         </TouchableOpacity>
-        <Text style={styles.nameText}><Text style={styles.boldText}>{details.Firstname} {details.Name}</Text></Text>
-        <Text style={styles.professionText}>Enseignant de {details.Matiere}</Text>
+        <Text style={styles.nameText}>
+          <Text style={styles.boldText}>{details.Firstname} {details.Name}</Text>
+        </Text>
+        <Text style={styles.professionText}>
+          {getTitreEnseignant(details.Niveau)} en {details.Matiere}
+        </Text>
         <View style={styles.ratingContainer}>
           {[...Array(Math.floor(details.Etoiles || 0))].map((_, index) => (
             <Text key={index} style={styles.star}>★</Text>
@@ -85,10 +97,8 @@ export default function DetailsEducateur() {
         </View>
       </View>
 
-      {/* Informations utilisateur en lecture seule */}
       <View style={styles.formContainer}>
         <ScrollView style={styles.form} showsVerticalScrollIndicator={false}>
-
           <Text style={styles.label}>Expérience</Text>
           <View style={styles.inputReadonly}><Text style={styles.inputText}>{details.Experience} ans</Text></View>
 
