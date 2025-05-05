@@ -69,7 +69,7 @@ export default function AjouterEducateur() {
   useEffect(() => {
     const fetchEducators = async () => {
       try {
-        const response = await fetch('https://access-backend-a961a1f4abb2.herokuapp.com/api/get_all_educateurs');
+        const response = await fetch('https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/get_all_educateurs');
         const data = await response.json();
     
         console.log("Données reçues de l'API :", data);

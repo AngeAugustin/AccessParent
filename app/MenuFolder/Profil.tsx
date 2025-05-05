@@ -47,7 +47,7 @@ export default function Profil() {
 
   const handleSaveChanges = async () => {
     try {
-      const response = await fetch(`https://access-backend-a961a1f4abb2.herokuapp.com/api/modif/${user.NPI}`, {
+      const response = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/modif/${user.NPI}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export default function Profil() {
 
   const fetchUserProfile = async (NPI: string) => {
     try {
-      const response = await fetch(`https://access-backend-a961a1f4abb2.herokuapp.com/api/profil_parent/${NPI}`);
+      const response = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/profil_parent/${NPI}`);
 
       if (!response.ok) {
         throw new Error('Erreur lors de la récupération du profil utilisateur');

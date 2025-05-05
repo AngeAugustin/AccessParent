@@ -35,7 +35,7 @@ export default function EducateursNC() {
     useEffect(() => {
       setLoading(true);
       
-      fetch(`https://access-backend-a961a1f4abb2.herokuapp.com/api/profil/${npi}`)
+      fetch(`https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/profil/${npi}`)
         .then((res) => res.json())
         .then((data) => {
           console.log("Données reçues:", data);

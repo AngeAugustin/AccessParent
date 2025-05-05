@@ -44,7 +44,7 @@ export default function Educateurs() {
     const fetchEducateursData = async () => {
       if (user.NPI) {
         try {
-          const response = await fetch(`https://access-backend-a961a1f4abb2.herokuapp.com/api/get_tutorat/${user.NPI}`);
+          const response = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/get_tutorat/${user.NPI}`);
           const data = await response.json();
 
           // Mise à jour de l'état avec les données récupérées de l'API
