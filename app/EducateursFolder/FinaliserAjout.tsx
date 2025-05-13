@@ -91,8 +91,10 @@ export default function FinaliserAjout() {
         if (data.error) {
           console.error(data.error);
         } else {
-          const dispoList = [data.Dispo1, data.Dispo2, data.Dispo3, data.Dispo4].filter(Boolean);
-          setDisponibilites(dispoList);
+          const dispoList = data.disponibilites_libres 
+            ? Object.values(data.disponibilites_libres).filter(Boolean).map(String) 
+            : [];
+          setDisponibilites(dispoList as string[]);
         }
       } catch (error) {
         console.error('Erreur lors de la récupération des disponibilités', error);

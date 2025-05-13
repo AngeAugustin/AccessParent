@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
 import { Montserrat_400Regular, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
 import * as SecureStore from 'expo-secure-store';
 
 export default function Profil() {
   const router = useRouter();
+  const profileImageUrl = 'https://i.postimg.cc/9FqSnKGz/Accueil.jpg';
   const [fontsLoaded] = useFonts({
     Montserrat_400Regular,
     Montserrat_700Bold,
@@ -98,7 +99,7 @@ export default function Profil() {
       {/* Avatar statique */}
       <View style={styles.avatarContainer}>
         <View style={styles.avatarWrapper}>
-          <Icon name="person" size={50} color="orange" />
+          <Image source={{ uri: profileImageUrl }} style={styles.profileImage} />
         </View>
 
         <Text style={styles.idText}>{user.NPI}</Text>
@@ -229,5 +230,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
     fontFamily: 'Montserrat_700Bold',
+  },
+  profileImage: {
+    width: 95,
+    height: 95,
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: 'white',
   },
 });

@@ -1,25 +1,28 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-import Icon from 'react-native-vector-icons/Ionicons'; 
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function NavBar() {
   const router = useRouter();
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.button} onPress={() => router.push('/Accueil')}>
+        <Ionicons name="home" size={30} color="#fff" />
+      </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => router.push('/EnfantsFolder/ListEnfants')}>
-        <Icon name="people" size={30} color="#fff" />
+        <Ionicons name="people" size={30} color="#fff" />
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => router.push('/EducateursFolder/Educateurs')}>
-        <Icon name="school" size={30} color="#fff" />
+        <Ionicons name="school" size={30} color="#fff" />
       </TouchableOpacity>
      {/* <TouchableOpacity style={styles.button} onPress={() => router.push('/AccompsFolder/Accompagnateurs')}>
             <Icon name="hand-left" size={30} color="#fff" />
         </TouchableOpacity> */}
 
       <TouchableOpacity style={styles.button} onPress={() => router.push('/PaiementsFolder/Paiements')}>
-        <Icon name="wallet" size={30} color="#fff" />
+        <Ionicons name="wallet" size={30} color="#fff" />
       </TouchableOpacity>
     </View>
   );

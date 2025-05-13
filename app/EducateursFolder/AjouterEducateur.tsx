@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Image } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
 type EducatorCardProps = {
@@ -10,9 +10,10 @@ type EducatorCardProps = {
   rating: number;
   zone: string;
   npi: string;
+  photo?: string;
 };
 
-const EducatorCard: React.FC<EducatorCardProps> = ({ npi, name, subject, rating, zone }) => {
+const EducatorCard: React.FC<EducatorCardProps> = ({ npi, name, subject, rating, zone, photo }) => {
   const router = useRouter();
 
   const handleAddEducator = () => {
@@ -22,17 +23,21 @@ const EducatorCard: React.FC<EducatorCardProps> = ({ npi, name, subject, rating,
   const handleInfoEducator = () => {
     router.push(`/EducateursFolder/EducateursNC?npi=${npi}`);
   };
- 
+
   return (
     <View style={styles.card}>
       <View style={styles.cardContent}>
-        <View style={styles.avatar} />
+        {photo ? (
+          <Image source={{ uri: `data:image/jpeg;base64,${photo}` }} style={styles.avatar} />
+        ) : (
+          <View style={styles.avatar} />
+        )}
         <View style={styles.info}>
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.subject}>{subject}</Text>
           <View style={styles.ratingContainer}>
             {[...Array(5)].map((_, index) => (
-              <Icon
+              <MaterialIcons
                 key={index}
                 name="star"
                 size={16}
@@ -45,10 +50,10 @@ const EducatorCard: React.FC<EducatorCardProps> = ({ npi, name, subject, rating,
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.addButton} onPress={handleAddEducator}>
-          <Icon name="person-add" size={20} color="#fff" />
+          <MaterialIcons name="person-add" size={20} color="#fff" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.infoButton} onPress={handleInfoEducator}>
-          <Icon name="info" size={20} color="#0A4191" />
+          <MaterialIcons name="info" size={20} color="#0A4191" />
         </TouchableOpacity>
       </View>
     </View>
@@ -71,22 +76,23 @@ export default function AjouterEducateur() {
       try {
         const response = await fetch('https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/get_all_educateurs');
         const data = await response.json();
-    
+
         console.log("Données reçues de l'API :", data);
-    
+
         if (!Array.isArray(data)) {
           console.error("La réponse de l'API n'est pas un tableau :", data);
           throw new Error(data.message || "Données inattendues");
         }
-    
+
         const formattedData = data.map((educator) => ({
           name: `${educator.Firstname} ${educator.Name}`,
           subject: educator.Matiere,
-          rating: educator.Etoiles ?? 0, 
+          rating: educator.Etoiles ?? 0,
           zone: 'Non spécifié',
           npi: educator.NPI,
+          photo: educator.Photo_educateur,
         }));
-    
+
         setEducators(formattedData);
       } catch (error) {
         console.error("Erreur lors de la récupération des éducateurs :", error);
@@ -94,7 +100,6 @@ export default function AjouterEducateur() {
         setLoading(false);
       }
     };
-    
 
     fetchEducators();
   }, []);
@@ -143,7 +148,15 @@ export default function AjouterEducateur() {
         <ActivityIndicator size="large" color="#0A4191" />
       ) : filteredEducators.length > 0 ? (
         filteredEducators.map((educator, index) => (
-          <EducatorCard key={index} npi={educator.npi} name={educator.name} subject={educator.subject} rating={educator.rating} zone={educator.zone} />
+          <EducatorCard
+            key={index}
+            npi={educator.npi}
+            name={educator.name}
+            subject={educator.subject}
+            rating={educator.rating}
+            zone={educator.zone}
+            photo={educator.photo}
+          />
         ))
       ) : (
         <Text style={styles.noEducators}>Aucun éducateur trouvé avec ces critères.</Text>
@@ -192,17 +205,18 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   picker: {
-    height: 50, // Augmenter la hauteur pour plus de visibilité
-    flex: 1, // Pour que chaque Picker prenne une largeur égale
+    height: 50,
+    flex: 1,
     borderColor: '#D1D5DB',
     borderWidth: 1,
     borderRadius: 15,
     paddingHorizontal: 12,
     marginBottom: 5,
     fontFamily: 'Montserrat_400Regular',
-    fontSize: 14, // Plus grand texte pour plus de lisibilité
+    fontSize: 14,
     color: '#282828',
-    backgroundColor: '#fff', // Pour que le fond soit bien visible
+    backgroundColor: '#fff',
+    marginRight: 5,
   },
   card: {
     flexDirection: 'row',
