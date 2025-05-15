@@ -60,7 +60,7 @@ export default function FinaliserAjout() {
 
     const fetchEducateurData = async () => {
       try {
-        const response = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/profil/${npi}`);
+        const response = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/public/api/profil/${npi}`);
         const data = await response.json();
         console.log('Données profil éducateur:', data);
     
@@ -85,7 +85,7 @@ export default function FinaliserAjout() {
 
     const fetchDisponibilites = async () => {
       try {
-        const response = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/get_dispo/${npi}`);
+        const response = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/public/api/get_dispo/${npi}`);
         const data = await response.json();
         
         if (data.error) {
@@ -108,7 +108,7 @@ export default function FinaliserAjout() {
       }
   
       try {
-        const response = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/list_enfants/${user.NPI}`);
+        const response = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/public/api/list_enfants/${user.NPI}`);
         const data = await response.json();
         
         if (data.success) {
@@ -158,7 +158,7 @@ export default function FinaliserAjout() {
     };
   
     try {
-      const response = await fetch('https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/add_tutorat', {
+      const response = await fetch('https://mediumvioletred-mole-607585.hostingersite.com/public/api/add_tutorat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

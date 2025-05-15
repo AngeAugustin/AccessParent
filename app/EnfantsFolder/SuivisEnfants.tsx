@@ -31,7 +31,7 @@ export default function DetailsEnfants() {
   useEffect(() => {
     const fetchHistoriques = async () => {
       try {
-        const response = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/get_historique_seance/${Reference_tutorat}`);
+        const response = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/public/api/get_historique_seance/${Reference_tutorat}`);
         const data = await response.json();
 
         if (data.status === 200) {

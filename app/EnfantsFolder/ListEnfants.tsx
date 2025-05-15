@@ -38,7 +38,7 @@ export default function ListEnfants() {
 
   const fetchEnfants = async (NPI: string) => {
     try {
-      const response = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/list_enfants/${NPI}`);
+      const response = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/public/api/list_enfants/${NPI}`);
       const data = await response.json();
 
       if (data.success) {

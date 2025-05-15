@@ -29,7 +29,7 @@ export default function DetailsEnfant() {
   useEffect(() => {
     const fetchEnfantDetails = async () => {
       try {
-        const response = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/get_enfant/${NPI_enfant}`);
+        const response = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/public/api/get_enfant/${NPI_enfant}`);
         const data = await response.json();
 
         if (response.ok) {

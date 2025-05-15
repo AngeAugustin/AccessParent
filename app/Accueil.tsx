@@ -43,12 +43,12 @@ const Dashboard: React.FC = () => {
       });
 
       // Appel API count enfants
-      const enfantsRes = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/count_enfants/${currentNpi}`);
+      const enfantsRes = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/public/api/count_enfants/${currentNpi}`);
       const enfantsData = await enfantsRes.json();
       setEnfantCount(enfantsData.enfants_uniques);
 
       // Appel API count éducateurs
-      const educateursRes = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/count_educateurs/${currentNpi}`);
+      const educateursRes = await fetch(`https://mediumvioletred-mole-607585.hostingersite.com/public/api/count_educateurs/${currentNpi}`);
       const educateursData = await educateursRes.json();
       setEducateurCount(educateursData.educateurs_uniques);
     }
@@ -63,7 +63,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchEducators = async () => {
       try {
-        const response = await fetch('https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/get_all_educateurs');
+        const response = await fetch('https://mediumvioletred-mole-607585.hostingersite.com/public/api/get_all_educateurs');
         const data = await response.json();
 
         if (!Array.isArray(data)) {

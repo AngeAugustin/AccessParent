@@ -42,7 +42,7 @@ export default function LoginPage() {
     }
     
     try {
-      const response = await fetch('https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/login', {
+      const response = await fetch('https://mediumvioletred-mole-607585.hostingersite.com/public/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

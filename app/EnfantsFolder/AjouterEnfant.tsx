@@ -105,7 +105,7 @@ export default function AjouterEnfant() {
 
       const formattedDate = new Date(formData.Date_naissance).toISOString();
 
-      const response = await fetch('https://mediumvioletred-mole-607585.hostingersite.com/AccessBackend/public/api/add_enfant', {  
+      const response = await fetch('https://mediumvioletred-mole-607585.hostingersite.com/public/api/add_enfant', {  
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
