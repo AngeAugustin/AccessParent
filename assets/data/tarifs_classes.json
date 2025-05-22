@@ -1,0 +1,98 @@
+{
+  "6ème": {
+    "heures_par_seance": 1.5,
+    "seances_par_semaine": 2,
+    "tarif_horaire": 20,
+    "montant_par_mois": 240
+  },
+  "5ème": {
+    "heures_par_seance": 1.5,
+    "seances_par_semaine": 2,
+    "tarif_horaire": 20,
+    "montant_par_mois": 240
+  },
+  "4ème ML": {
+    "heures_par_seance": 1.5,
+    "seances_par_semaine": 2,
+    "tarif_horaire": 22,
+    "montant_par_mois": 264
+  },
+  "4e MC": {
+    "heures_par_seance": 1.5,
+    "seances_par_semaine": 2,
+    "tarif_horaire": 22,
+    "montant_par_mois": 264
+  },
+  "3e ML": {
+    "heures_par_seance": 1.5,
+    "seances_par_semaine": 2,
+    "tarif_horaire": 22,
+    "montant_par_mois": 264
+  },
+  "3ème MC": {
+    "heures_par_seance": 1.5,
+    "seances_par_semaine": 2,
+    "tarif_horaire": 22,
+    "montant_par_mois": 264
+  },
+  "2nde AB": {
+    "heures_par_seance": 1.5,
+    "seances_par_semaine": 1,
+    "tarif_horaire": 25,
+    "montant_par_mois": 150
+  },
+  "2nde C": {
+    "heures_par_seance": 1.5,
+    "seances_par_semaine": 1,
+    "tarif_horaire": 25,
+    "montant_par_mois": 150
+  },
+  "2nde D": {
+    "heures_par_seance": 1.5,
+    "seances_par_semaine": 1,
+    "tarif_horaire": 25,
+    "montant_par_mois": 150
+  },
+  "1ère AB": {
+    "heures_par_seance": 1.5,
+    "seances_par_semaine": 1,
+    "tarif_horaire": 25,
+    "montant_par_mois": 150
+  },
+  "1ère C": {
+    "heures_par_seance": 1.5,
+    "seances_par_semaine": 1,
+    "tarif_horaire": 25,
+    "montant_par_mois": 150
+  },
+  "1ère D": {
+    "heures_par_seance": 1.5,
+    "seances_par_semaine": 1,
+    "tarif_horaire": 25,
+    "montant_par_mois": 150
+  },
+  "Tle A": {
+    "heures_par_seance": 2,
+    "seances_par_semaine": 1,
+    "tarif_horaire": 25,
+    "montant_par_mois": 200
+  },
+  "Tle B": {
+    "heures_par_seance": 2,
+    "seances_par_semaine": 1,
+    "tarif_horaire": 25,
+    "montant_par_mois": 200
+  },
+  "Tle C": {
+    "heures_par_seance": 2,
+    "seances_par_semaine": 1,
+    "tarif_horaire": 25,
+    "montant_par_mois": 200
+  },
+  "Tle D": {
+    "heures_par_seance": 2,
+    "seances_par_semaine": 1,
+    "tarif_horaire": 25,
+    "montant_par_mois": 200
+  }
+}
