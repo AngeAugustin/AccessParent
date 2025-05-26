@@ -9,6 +9,7 @@ interface Enfant {
   NPI_enfant: string;
   Nom_enfant: string;
   Prenom_enfant: string;
+  Classe_actuelle: string;
 }
 
 export default function FinaliserAjout() {
@@ -36,7 +37,7 @@ export default function FinaliserAjout() {
   const [selectedSeance1, setSelectedSeance1] = useState<string>('');
   const [selectedSeance2, setSelectedSeance2] = useState<string>('');
   const filteredSeance2 = (disponibilites || []).filter(dispo => dispo !== selectedSeance1);
-  const dureeList = ['7 jours', ' 15 jours', '30 jours', '60 jours', '90 jours', '120 jours'];
+  const dureeList = ['1', '2', '4', '8', '12', '16'];
   const getTitreEnseignant = (niveau: string) => {
     if (niveau === 'Cycle I') return 'Professeur Adjoint';
     if (niveau === 'Cycle II') return 'Professeur Certifié';
@@ -154,7 +155,8 @@ export default function FinaliserAjout() {
       NPI_enfant: selectedChildData.NPI_enfant,  
       Duree_tutorat: selectedDuree,
       Seance1: selectedSeance1,
-      Seance2: selectedSeance2
+      Seance2: selectedSeance2,
+      Classe_actuelle: selectedChildData.Classe_actuelle,
     };
   
     try {
