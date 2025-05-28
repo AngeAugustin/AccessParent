@@ -110,7 +110,7 @@ const Dashboard: React.FC = () => {
               <View>
                 <Text style={styles.tileLabel}>Mes enfants</Text>
                 <View style={styles.tileNumberRow}>
-                  <Text style={styles.tileNumber}>{enfantCount !== null ? enfantCount : '...'}</Text>
+                  <Text style={styles.tileNumber}>{enfantCount !== null ? enfantCount : '0'}</Text>
                   <Feather name="arrow-up-right" size={18} color="#1E40AF" style={{ marginLeft: 6 }} />
                 </View>
               </View>
@@ -127,7 +127,7 @@ const Dashboard: React.FC = () => {
               <View>
                 <Text style={styles.tileLabel}>Mes éducateurs</Text>
                 <View style={styles.tileNumberRow}>
-                  <Text style={styles.tileNumber}>{educateurCount !== null ? educateurCount : '...'}</Text>
+                  <Text style={styles.tileNumber}>{educateurCount !== null ? educateurCount : '0'}</Text>
                   <Feather name="arrow-up-right" size={18} color="#1E40AF" style={{ marginLeft: 6 }} />
                 </View>
               </View>
