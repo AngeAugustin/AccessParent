@@ -46,6 +46,23 @@ export default function Reclamation() {
     fetchUserData();
   }, []);
 
+  const generateRandom10Digits = () => {
+  let result = '';
+  for (let i = 0; i < 10; i++) {
+    result += Math.floor(Math.random() * 10); // chiffre entre 0 et 9
+  }
+  return result;
+};
+
+const random10Digits = generateRandom10Digits();
+console.log(random10Digits);  // ex: "4839201756"
+
+  const generateID = (npiEnfant: string, npiEducateur: string) => {
+    const referenceEnfant = npiEnfant.substring(0, 5);  
+    const referenceEducateur = npiEducateur.substring(0, 5);  
+    return referenceEnfant + referenceEducateur;
+  };
+
   const handleSubmit = async () => {
     if (!selectedMotif || !reclamationText.trim()) {
       Alert.alert('Erreur', 'Veuillez remplir tous les champs.');
@@ -53,6 +70,7 @@ export default function Reclamation() {
     }
 
     const payload = {
+      Id_reclamation: random10Digits,
       NPI_demandant: user.NPI,
       Motif: selectedMotif,
       Details: reclamationText,
@@ -73,12 +91,12 @@ export default function Reclamation() {
 
       const data = await response.json();
 
-      if (response.status === 201) {
-        Alert.alert('Succès', 'Réclamation soumise avec succès.');
-        router.push('/Accueil'); // ou router.push('/accueil') selon ton app
-      } else {
-        Alert.alert('Erreur', data.error || 'Erreur lors de la soumission.');
-      }
+      if (data.error) {
+              Alert.alert('Erreur', data.error);
+            } else {
+              Alert.alert('Succès', 'Réclamation faite avec succès!');
+              router.push('/Accueil');  
+            }
     } catch (error) {
       console.error('Erreur API :', error);
       Alert.alert('Erreur', 'Une erreur est survenue.');
