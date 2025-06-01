@@ -88,7 +88,8 @@ export default function Paiements() {
               <Text style={styles.paiementStatut}>Paiement {activeTab}</Text>
             </View>
             {activeTab === 'effectué' ? (
-              <TouchableOpacity style={styles.detailsButton}>
+              <TouchableOpacity style={styles.detailsButton}
+              >
                 <FontAwesome name="info-circle" size={25} color="#0a4191" style={styles.detailsIcon} />
               </TouchableOpacity>
             ) : (
