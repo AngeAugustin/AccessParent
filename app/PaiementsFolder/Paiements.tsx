@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, ActivityIndicator } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
+import {Linking} from 'react-native';
 
 export default function Paiements() {
   const [activeTab, setActiveTab] = useState<'en attente' | 'effectué'>('en attente');
@@ -10,6 +11,37 @@ export default function Paiements() {
   const [paiementsEffectues, setPaiementsEffectues] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const [user, setUser] = useState({
+    NPI: '',
+    nom: '',
+    prenom: '',
+    email: '',
+    role: '',
+  });
+
+
+  useEffect(() => {
+  const fetchUserData = async () => {
+    try {
+      const userData = await SecureStore.getItemAsync('user');
+      if (userData) {
+        const parsedUser = JSON.parse(userData);
+        setUser({
+          NPI: parsedUser.NPI || '',
+          nom: parsedUser.Name || '',
+          prenom: parsedUser.Firstname || '',
+          email: parsedUser.Email || '',
+          role: parsedUser.Role || '',
+        });
+      }
+    } catch (error) {
+      console.error('Erreur lors de la récupération des données utilisateur', error);
+    }
+  };
+
+  fetchUserData();
+}, []);
+
 
   useEffect(() => {
     const fetchPaiements = async () => {
@@ -46,6 +78,55 @@ export default function Paiements() {
   }, []);
 
   const paiements = activeTab === 'en attente' ? paiementsEnAttente : paiementsEffectues;
+
+  const handlePayer = async (paiement: any) => {
+  try {
+    // Récupérer les infos du payeur (parent) depuis SecureStore (exemple)
+    const userData = await SecureStore.getItemAsync('user');
+    if (!userData) throw new Error('Utilisateur non connecté');
+
+    const { NPI, nom, prenom, role } = JSON.parse(userData);
+
+    // Préparer les données à envoyer au backend
+    const payload = {
+      Id_paiement: paiement.Id_paiement, 
+      Montant_paiement: paiement.Montant_paiement,
+      NPI_payeur: user.NPI,
+      Nom_payeur: user.nom,
+      Prenom_payeur: user.prenom,
+      Email_payeur: user.email,
+      Role_payeur: user.role,
+      Paiement: paiement.Paiement,
+    };
+
+
+    const response = await fetch('https://mediumvioletred-mole-607585.hostingersite.com/public/api/initier_transaction', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      alert(`Erreur : ${result.message || 'Échec du paiement'}`);
+    } else {
+      
+      Linking.openURL(result.data.url)
+       .catch((err) => console.error('Failed to open URL:', err));
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      alert('Erreur lors du paiement : ' + error.message);
+    } else {
+      alert('Erreur lors du paiement : ' + String(error));
+    }
+  }
+};
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -93,10 +174,14 @@ export default function Paiements() {
                 <FontAwesome name="info-circle" size={25} color="#0a4191" style={styles.detailsIcon} />
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity style={styles.payerButton}>
+              <TouchableOpacity
+                style={styles.payerButton}
+                onPress={() => handlePayer(p)}
+              >
                 <FontAwesome name="credit-card" size={16} color="#fff" style={styles.payerIcon} />
                 <Text style={styles.payerText}>Payer</Text>
               </TouchableOpacity>
+
             )}
           </View>
         ))

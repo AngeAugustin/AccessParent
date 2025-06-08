@@ -255,5 +255,5 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat_400Regular',
     fontSize: 12,
     textAlign: 'center'
-  },
+  }, 
 });

@@ -16,7 +16,7 @@ export default function DetailsEnfant() {
   const [loading, setLoading] = useState(true);
   const [enfant, setEnfant] = useState(null);
   const [formData, setFormData] = useState({
-    NPI: '',
+    NPI_enfant: '',
     Nom_enfant: '',
     Prenom_enfant: '',
     Date_naissance: '',
@@ -35,7 +35,7 @@ export default function DetailsEnfant() {
         if (response.ok) {
           setEnfant(data);
           setFormData({
-            NPI: data.NPI,
+            NPI_enfant: data.NPI_enfant,
             Nom_enfant: data.Nom_enfant,
             Prenom_enfant: data.Prenom_enfant,
             Date_naissance: data.Date_naissance,
@@ -76,7 +76,7 @@ export default function DetailsEnfant() {
       <View style={styles.formContainer}>
         <Text style={styles.formTitle}>Quelques informations</Text>
         <View style={styles.form}>
-          <TextInput style={styles.input} value={formData.NPI} editable={false} />
+          <TextInput style={styles.input} value={formData.NPI_enfant} editable={false} />
           <TextInput style={styles.input} value={formData.Nom_enfant} onChangeText={(text) => handleChange('Nom_enfant', text)} />
           <TextInput style={styles.input} value={formData.Prenom_enfant} onChangeText={(text) => handleChange('Prenom_enfant', text)} />
           <TextInput style={styles.input} value={formData.Date_naissance} editable={false} />

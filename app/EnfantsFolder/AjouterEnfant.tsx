@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { useRouter } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { Montserrat_400Regular, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
-import * as SecureStore from 'expo-secure-store'; 
+import * as SecureStore from 'expo-secure-store';
 
 export default function AjouterEnfant() {
   const router = useRouter();
@@ -32,46 +33,42 @@ export default function AjouterEnfant() {
     Niveau_espagnol: string;
   }
 
-   const [formData, setFormData] = useState<FormData>({
-      NPI_enfant: '',
-      Nom_enfant: '',
-      Prenom_enfant: '',
-      Date_naissance: '',
-      Sexe_enfant: '',
-      Classe_actuelle: '',
-      Classe_precedente: '',
-      Ecole_actuelle: '',
-      Ecole_precedente: '',
-      Parent_tuteur: '',
-      Matieres_preferes: '',
-      Centre_interet: '',
-      Niveau_allemand: '',
-      Niveau_anglais: '',
-      Niveau_espagnol: '',
-      Niveau_francais: '',
-      Niveau_histgeo: '',
-      Niveau_mathematique: '',
-      Niveau_pct: '',
-      Niveau_philosophie: '',
-      Niveau_svt: '',
-    });
+  const [formData, setFormData] = useState<FormData>({
+    NPI_enfant: '',
+    Nom_enfant: '',
+    Prenom_enfant: '',
+    Date_naissance: '',
+    Sexe_enfant: '',
+    Classe_actuelle: '',
+    Classe_precedente: '',
+    Ecole_actuelle: '',
+    Ecole_precedente: '',
+    Parent_tuteur: '',
+    Matieres_preferes: '',
+    Centre_interet: '',
+    Niveau_allemand: '',
+    Niveau_anglais: '',
+    Niveau_espagnol: '',
+    Niveau_francais: '',
+    Niveau_histgeo: '',
+    Niveau_mathematique: '',
+    Niveau_pct: '',
+    Niveau_philosophie: '',
+    Niveau_svt: '',
+  });
 
-    // Typage des paramètres pour handleInputChange
-    const handleInputChange = (name: keyof FormData, value: string): void => {
-      setFormData({ ...formData, [name]: value });
-    };
+  const handleInputChange = (name: keyof FormData, value: string): void => {
+    setFormData({ ...formData, [name]: value });
+  };
 
   const [error, setError] = useState('');
-
   const [fontsLoaded] = useFonts({
     Montserrat_400Regular,
     Montserrat_700Bold,
   });
 
-  const [user, setUser] = useState({
-    NPI: '',
-  });
-    
+  const [user, setUser] = useState({ NPI: '' });
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -86,66 +83,61 @@ export default function AjouterEnfant() {
         console.error('Erreur lors de la récupération des données utilisateur', error);
       }
     };
-
     fetchUserData();
   }, []);
 
   const handleSubmit = async () => {
-
-    if (!formData.NPI_enfant || !formData.Nom_enfant || !formData.Prenom_enfant || !formData.Sexe_enfant || !formData.Date_naissance || !formData.Classe_actuelle
-      || !formData.Classe_precedente || !formData.Ecole_actuelle || !formData.Ecole_precedente || !formData.Niveau_allemand || !formData.Niveau_anglais || !formData.Niveau_espagnol
-      || !formData.Niveau_francais || !formData.Niveau_histgeo || !formData.Niveau_mathematique || !formData.Niveau_pct || !formData.Niveau_philosophie || !formData.Niveau_svt
-      || !formData.Matieres_preferes || !formData.Parent_tuteur || !formData.Centre_interet
+    if (
+      !formData.NPI_enfant ||
+      !formData.Nom_enfant ||
+      !formData.Prenom_enfant ||
+      !formData.Sexe_enfant ||
+      !formData.Date_naissance ||
+      !formData.Classe_actuelle ||
+      !formData.Classe_precedente ||
+      !formData.Ecole_actuelle ||
+      !formData.Ecole_precedente ||
+      !formData.Niveau_allemand ||
+      !formData.Niveau_anglais ||
+      !formData.Niveau_espagnol ||
+      !formData.Niveau_francais ||
+      !formData.Niveau_histgeo ||
+      !formData.Niveau_mathematique ||
+      !formData.Niveau_pct ||
+      !formData.Niveau_philosophie ||
+      !formData.Niveau_svt ||
+      !formData.Matieres_preferes ||
+      !formData.Parent_tuteur ||
+      !formData.Centre_interet
     ) {
       setError('Veuillez remplir tous les champs');
       return;
     }
 
     try {
-
       const formattedDate = new Date(formData.Date_naissance).toISOString();
 
-      const response = await fetch('https://mediumvioletred-mole-607585.hostingersite.com/public/api/add_enfant', {  
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          NPI: user.NPI,
-          NPI_enfant: formData.NPI_enfant, 
-          Nom_enfant: formData.Nom_enfant,
-          Prenom_enfant: formData.Prenom_enfant,
-          Sexe_enfant: formData.Sexe_enfant,
-          Date_naissance: formattedDate,
-          Classe_actuelle: formData.Classe_actuelle,
-          Classe_precedente: formData.Classe_precedente,
-          Ecole_precedente: formData.Ecole_precedente,
-          Ecole_actuelle: formData.Ecole_actuelle,
-          Matieres_preferes: formData.Matieres_preferes,
-          Centre_interet: formData.Centre_interet,
-          Parent_tuteur: formData.Parent_tuteur,
-          Niveau_francais: formData.Niveau_francais,
-          Niveau_anglais: formData.Niveau_anglais,
-          Niveau_philosophie: formData.Niveau_philosophie,
-          Niveau_mathematique: formData.Niveau_mathematique,
-          Niveau_svt: formData.Niveau_svt,
-          Niveau_pct: formData.Niveau_pct,
-          Niveau_histgeo: formData.Niveau_histgeo,
-          Niveau_allemand: formData.Niveau_allemand,
-          Niveau_espagnol: formData.Niveau_espagnol,
-        }),
-      });
+      const response = await fetch(
+        'https://mediumvioletred-mole-607585.hostingersite.com/public/api/add_enfant',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            NPI: user.NPI,
+            ...formData,
+            Date_naissance: formattedDate,
+          }),
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok) {
-        router.push('/EnfantsFolder/ListEnfants');  
+        router.push('/EnfantsFolder/ListEnfants');
       } else {
-        // Vérification de la structure de l'erreur et affichage des messages
         if (data.errors) {
-          // Si le backend renvoie un objet avec des erreurs
           const errorMessages = Object.values(data.errors).flat().join(', ');
-          setError(errorMessages);  // Concatène les messages d'erreur
+          setError(errorMessages);
         } else {
           setError(data.error || 'Une erreur s\'est produite');
         }
@@ -155,8 +147,13 @@ export default function AjouterEnfant() {
     }
   };
 
-  const [currentForm, setCurrentForm] = useState(1); // État pour gérer le formulaire actuel
-  const [isFocused, setIsFocused] = useState(false); // État pour détecter le focus
+  const [currentForm, setCurrentForm] = useState(1);
+
+  const classes = [
+    '6ème', '5ème', '4ème ML', '4ème MC', '3ème ML', '3ème MC',
+    '2nde AB', '2nde CD', '1ère AB', '1ère C', '1ère D',
+    'Tle AB', 'Tle C', 'Tle D'
+  ];
 
   const renderForm = () => {
     switch (currentForm) {
@@ -166,12 +163,13 @@ export default function AjouterEnfant() {
             <Text style={styles.formTitle}>Profil personnel</Text>
             {error && <Text style={styles.errorText}>{error}</Text>}
             <View style={styles.form}>
-              <TextInput 
-                style={styles.input} 
-                value={formData.NPI_enfant} 
+              <TextInput
+                style={styles.input}
+                value={formData.NPI_enfant}
                 onChangeText={(text) => handleInputChange('NPI_enfant', text)}
-                placeholder="NPI de l'enfant" 
-                keyboardType="phone-pad" />
+                placeholder="NPI de l'enfant"
+                keyboardType="phone-pad"
+              />
               <TextInput
                 style={styles.input}
                 placeholder="Noms de l'enfant"
@@ -184,10 +182,40 @@ export default function AjouterEnfant() {
                 value={formData.Prenom_enfant}
                 onChangeText={(text) => handleInputChange('Prenom_enfant', text)}
               />
-              <TextInput style={styles.input} value={formData.Date_naissance} onChangeText={(text) => handleInputChange('Date_naissance', text)} placeholder="Date de naissance" keyboardType="numeric" />
-              <TextInput style={styles.input} value={formData.Sexe_enfant} onChangeText={(text) => handleInputChange('Sexe_enfant', text)} placeholder="Sexe (Masculin M / Féminin F)" />
-              <TextInput style={styles.input} value={formData.Classe_actuelle} onChangeText={(text) => handleInputChange('Classe_actuelle', text)} placeholder="Classe actuelle" />
-              <TextInput style={styles.input} value={formData.Ecole_actuelle} onChangeText={(text) => handleInputChange('Ecole_actuelle', text)} placeholder="Ecole actuelle" />
+              <TextInput
+                style={styles.input}
+                value={formData.Date_naissance}
+                onChangeText={(text) => handleInputChange('Date_naissance', text)}
+                placeholder="Date de naissance"
+                keyboardType="numeric"
+              />
+              <TextInput
+                style={styles.input}
+                value={formData.Sexe_enfant}
+                onChangeText={(text) => handleInputChange('Sexe_enfant', text)}
+                placeholder="Sexe (M/F)"
+              />
+
+              {/* Classe actuelle Picker */}
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={formData.Classe_actuelle}
+                  onValueChange={(itemValue) => handleInputChange('Classe_actuelle', itemValue)}
+                >
+                  <Picker.Item label="Sélectionner une classe actuelle" value="" color="#7F7F7F" />
+                  {classes.map((classe, index) => (
+                    <Picker.Item key={index} label={classe} value={classe} />
+                  ))}
+                </Picker>
+              </View>
+
+              <TextInput
+                style={styles.input}
+                value={formData.Ecole_actuelle}
+                onChangeText={(text) => handleInputChange('Ecole_actuelle', text)}
+                placeholder="Ecole actuelle"
+              />
+
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => setCurrentForm(2)}
@@ -202,7 +230,7 @@ export default function AjouterEnfant() {
           <View style={styles.formContainer}>
             <Text style={styles.formTitle}>Profil psychologique</Text>
             <View style={styles.form}>
-            {error && <Text style={styles.errorText}>{error}</Text>}
+              {error && <Text style={styles.errorText}>{error}</Text>}
               <TextInput
                 style={styles.input}
                 placeholder="Parent ou Tuteur ?"
@@ -241,48 +269,49 @@ export default function AjouterEnfant() {
           <View style={styles.formContainer}>
             <Text style={styles.formTitle}>Parcours scolaire récent</Text>
             <View style={styles.scrollContainer}>
-              <ScrollView 
-                showsVerticalScrollIndicator={false} // Masque la barre de défilement
-                style={styles.scrollView}
-              >
+              <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
                 <View style={styles.form}>
-                {error && <Text style={styles.errorText}>{error}</Text>}
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Classe précédente"
-                    value={formData.Classe_precedente}
-                    onChangeText={(text) => handleInputChange('Classe_precedente', text)}
-                  />
+                  {error && <Text style={styles.errorText}>{error}</Text>}
+                  
+                  {/* Classe précédente Picker */}
+                  <View style={styles.pickerContainer}>
+                    <Picker
+                      selectedValue={formData.Classe_precedente}
+                      onValueChange={(itemValue) => handleInputChange('Classe_precedente', itemValue)}
+                    >
+                      <Picker.Item label="Sélectionner une classe précédente" value="" color="#7F7F7F" />
+                      {classes.map((classe, index) => (
+                        <Picker.Item key={index} label={classe} value={classe} />
+                      ))}
+                    </Picker>
+                  </View>
+
                   <TextInput
                     style={styles.input}
                     placeholder="Ecole précédente"
                     value={formData.Ecole_precedente}
                     onChangeText={(text) => handleInputChange('Ecole_precedente', text)}
                   />
-                  <TextInput style={styles.input} value={formData.Niveau_francais} onChangeText={(text) => handleInputChange('Niveau_francais', text)} placeholder="Niveau en Français" keyboardType="phone-pad" />
-                  <TextInput style={styles.input} value={formData.Niveau_pct} onChangeText={(text) => handleInputChange('Niveau_pct', text)} placeholder="Niveau en PCT" keyboardType="phone-pad" />
-                  <TextInput style={styles.input} value={formData.Niveau_mathematique} onChangeText={(text) => handleInputChange('Niveau_mathematique', text)} placeholder="Niveau en Mathématique" keyboardType="phone-pad" />
-                  <TextInput style={styles.input} value={formData.Niveau_svt} onChangeText={(text) => handleInputChange('Niveau_svt', text)} placeholder="Niveau en SVT" keyboardType="phone-pad" />
-                  <TextInput style={styles.input} value={formData.Niveau_anglais} onChangeText={(text) => handleInputChange('Niveau_anglais', text)} placeholder="Niveau en Anglais" keyboardType="phone-pad" />
-                  <TextInput style={styles.input} value={formData.Niveau_histgeo} onChangeText={(text) => handleInputChange('Niveau_histgeo', text)} placeholder="Niveau en Histoire et Géographie" keyboardType="phone-pad" />
-                  <TextInput style={styles.input} value={formData.Niveau_philosophie} onChangeText={(text) => handleInputChange('Niveau_philosophie', text)} placeholder="Niveau en Philosophie" keyboardType="phone-pad" />
-                  <TextInput style={styles.input} value={formData.Niveau_allemand} onChangeText={(text) => handleInputChange('Niveau_allemand', text)} placeholder="Niveau en Allemand" keyboardType="phone-pad" />
-                  <TextInput style={styles.input} value={formData.Niveau_espagnol} onChangeText={(text) => handleInputChange('Niveau_espagnol', text)} placeholder="Niveau en Espagnol" keyboardType="phone-pad" />
+
+                  {/* Niveaux */}
+                  <TextInput style={styles.input} placeholder="Niveau en Français" value={formData.Niveau_francais} onChangeText={(text) => handleInputChange('Niveau_francais', text)} keyboardType="phone-pad" />
+                  <TextInput style={styles.input} placeholder="Niveau en PCT" value={formData.Niveau_pct} onChangeText={(text) => handleInputChange('Niveau_pct', text)} keyboardType="phone-pad" />
+                  <TextInput style={styles.input} placeholder="Niveau en Mathématique" value={formData.Niveau_mathematique} onChangeText={(text) => handleInputChange('Niveau_mathematique', text)} keyboardType="phone-pad" />
+                  <TextInput style={styles.input} placeholder="Niveau en SVT" value={formData.Niveau_svt} onChangeText={(text) => handleInputChange('Niveau_svt', text)} keyboardType="phone-pad" />
+                  <TextInput style={styles.input} placeholder="Niveau en Anglais" value={formData.Niveau_anglais} onChangeText={(text) => handleInputChange('Niveau_anglais', text)} keyboardType="phone-pad" />
+                  <TextInput style={styles.input} placeholder="Niveau en Histoire et Géographie" value={formData.Niveau_histgeo} onChangeText={(text) => handleInputChange('Niveau_histgeo', text)} keyboardType="phone-pad" />
+                  <TextInput style={styles.input} placeholder="Niveau en Philosophie" value={formData.Niveau_philosophie} onChangeText={(text) => handleInputChange('Niveau_philosophie', text)} keyboardType="phone-pad" />
+                  <TextInput style={styles.input} placeholder="Niveau en Allemand" value={formData.Niveau_allemand} onChangeText={(text) => handleInputChange('Niveau_allemand', text)} keyboardType="phone-pad" />
+                  <TextInput style={styles.input} placeholder="Niveau en Espagnol" value={formData.Niveau_espagnol} onChangeText={(text) => handleInputChange('Niveau_espagnol', text)} keyboardType="phone-pad" />
                 </View>
               </ScrollView>
             </View>
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => setCurrentForm(2)}
-              >
-                <Text style={styles.buttonText}>Revenir au précédent</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={handleSubmit}
-              >
-                <Text style={styles.buttonText}>Finaliser</Text>
-              </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => setCurrentForm(2)}>
+              <Text style={styles.buttonText}>Revenir au précédent</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+              <Text style={styles.buttonText}>Finaliser</Text>
+            </TouchableOpacity>
           </View>
         );
       default:
@@ -349,15 +378,12 @@ const styles = StyleSheet.create({
     borderColor: '#D1D5DB',
     borderRadius: 10,
     padding: 15,
-    overflow: 'hidden', // Pour éviter que la bordure ne dépasse
-    marginBottom: 20
+    overflow: 'hidden',
+    marginBottom: 20,
   },
   scrollView: {
-    maxHeight: 400, // Limite la hauteur de la zone défilable
-    marginBottom: 5
-  },
-  textAreaFocused: {
-    borderColor: 'orange',
+    maxHeight: 400,
+    marginBottom: 5,
   },
   input: {
     height: 40,
@@ -369,6 +395,13 @@ const styles = StyleSheet.create({
     color: '#282828',
     marginBottom: 5,
     fontFamily: 'Montserrat_400Regular',
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 15,
+    marginBottom: 5,
+    overflow: 'hidden',
   },
   button: {
     height: 45,
@@ -389,6 +422,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontFamily: 'Montserrat_400Regular',
     fontSize: 12,
-    textAlign: 'center'
+    textAlign: 'center',
   },
 });

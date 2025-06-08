@@ -37,7 +37,7 @@ export default function FinaliserAjout() {
   const [selectedSeance1, setSelectedSeance1] = useState<string>('');
   const [selectedSeance2, setSelectedSeance2] = useState<string>('');
   const filteredSeance2 = (disponibilites || []).filter(dispo => dispo !== selectedSeance1);
-  const dureeList = ['1', '2', '4', '8', '12', '16'];
+  const dureeList = ['1', '2', '4', '8', '12'];
   const getTitreEnseignant = (niveau: string) => {
     if (niveau === 'Cycle I') return 'Professeur Adjoint';
     if (niveau === 'Cycle II') return 'Professeur Certifié';
