@@ -72,9 +72,9 @@ const AppBar = () => {
 const menuItems: MenuItem[] = [
   { icon: 'person', text: 'Profil', route: '/MenuFolder/Profil' },
   // { icon: 'notifications', text: 'Notifications', route: '/MenuFolder/Notifications' },
-  { icon: 'call', text: 'Contactez-nous', route: '/MenuFolder/Contact' },
-  { icon: 'document-text', text: 'Conditions générales d\'utilisation', route: '/MenuFolder/Conditions' },
+  // { icon: 'document-text', text: 'Conditions générales d\'utilisation', route: '/MenuFolder/Conditions' },
   { icon: 'alert-circle', text: 'Faire une réclamation', route: '/MenuFolder/Reclamation' },
+  { icon: 'call', text: 'Contactez-nous', route: '/MenuFolder/Contact' },
 ];
 
 const styles = StyleSheet.create({

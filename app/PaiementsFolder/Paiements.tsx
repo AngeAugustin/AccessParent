@@ -171,7 +171,7 @@ export default function Paiements() {
             {activeTab === 'effectué' ? (
               <TouchableOpacity style={styles.detailsButton}
               >
-                <FontAwesome name="info-circle" size={25} color="#0a4191" style={styles.detailsIcon} />
+                <FontAwesome name="info-circle" size={25} color="#0a4191" style={styles.detailsIcon} onPress={() => router.push(`/PaiementsFolder/DetailsPaiements?ID=${p.Paiement}`)} />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity

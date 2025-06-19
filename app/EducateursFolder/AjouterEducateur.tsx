@@ -10,10 +10,11 @@ type EducatorCardProps = {
   rating: number;
   zone: string;
   npi: string;
+  niveau?: string;
   photo?: string;
 };
 
-const EducatorCard: React.FC<EducatorCardProps> = ({ npi, name, subject, rating, zone, photo }) => {
+const EducatorCard: React.FC<EducatorCardProps> = ({ npi, name, subject, rating, zone, niveau, photo }) => {
   const router = useRouter();
 
   const handleAddEducator = () => {
@@ -34,7 +35,7 @@ const EducatorCard: React.FC<EducatorCardProps> = ({ npi, name, subject, rating,
         )}
         <View style={styles.info}>
           <Text style={styles.name}>{name}</Text>
-          <Text style={styles.subject}>{subject}</Text>
+          <Text style={styles.subject}>{subject} - {niveau}</Text>
           <View style={styles.ratingContainer}>
             {[...Array(5)].map((_, index) => (
               <MaterialIcons
@@ -68,7 +69,7 @@ export default function AjouterEducateur() {
   const [loading, setLoading] = useState<boolean>(true);
 
   const matiereList = ['Français', 'Mathématiques', 'PCT', 'Anglais', 'Hist-Géo', 'SVT', 'Philosophie', 'Economie'];
-  const classeList = ['6ème', '5ème', '4ème'];
+  const classeList = ['6ème', '5ème', '4èmeML','4ème MC','3ème MC', '3èmeML', '2ndeAB', '2nde CD', '1èreAB', '1ère C', '1ère D', 'Tle AB','Tle C', 'Tle D'];
   const zoneList = ['Cotonou', 'Calavi', 'Fidjrossè'];
 
   useEffect(() => {
@@ -91,6 +92,7 @@ export default function AjouterEducateur() {
           zone: 'Non spécifié',
           npi: educator.NPI,
           photo: educator.Photo_educateur,
+          niveau: educator.Niveau || 'Non spécifié',
         }));
 
         setEducators(formattedData);
@@ -156,6 +158,7 @@ export default function AjouterEducateur() {
             rating={educator.rating}
             zone={educator.zone}
             photo={educator.photo}
+            niveau={educator.niveau}
           />
         ))
       ) : (

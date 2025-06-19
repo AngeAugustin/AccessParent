@@ -38,7 +38,7 @@ const Dashboard: React.FC = () => {
       const currentNpi = `${parsedUser.NPI}` || '';
 
       setUser({
-        nomPrenoms: `${parsedUser.Firstname} ${parsedUser.Name}` || '',
+        nomPrenoms: `${parsedUser.Firstname}${parsedUser.Name}` || '',
         npi: currentNpi,
       });
 
