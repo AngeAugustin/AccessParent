@@ -31,6 +31,17 @@ export default function AjouterEnfant() {
     Niveau_histgeo: string;
     Niveau_allemand: string;
     Niveau_espagnol: string;
+    Niveau_economie: string;
+    Niveau_comptabilite: string;
+    Niveau_comptagenerale: string;
+    Niveau_comptaanalytique: string;
+    Niveau_comptasociete: string;
+    Niveau_comptausuelle: string;
+    Niveau_TA: string;
+    Niveau_mathsfinanciere: string;
+    Niveau_droit: string;
+    Niveau_mathsgenerale: string;
+    Niveau_fiscalite: string;
   }
 
   const [formData, setFormData] = useState<FormData>({
@@ -55,6 +66,17 @@ export default function AjouterEnfant() {
     Niveau_pct: '',
     Niveau_philosophie: '',
     Niveau_svt: '',
+    Niveau_economie: '',
+    Niveau_comptabilite: '',
+    Niveau_comptagenerale: '',
+    Niveau_comptaanalytique: '',
+    Niveau_comptasociete: '',
+    Niveau_comptausuelle: '',
+    Niveau_TA: '',
+    Niveau_mathsfinanciere: '',
+    Niveau_droit: '',
+    Niveau_mathsgenerale: '',
+    Niveau_fiscalite: '',
   });
 
   const handleInputChange = (name: keyof FormData, value: string): void => {
@@ -86,31 +108,122 @@ export default function AjouterEnfant() {
     fetchUserData();
   }, []);
 
+  const [currentForm, setCurrentForm] = useState(1);
+
+  const classes = [
+    '6ème', '5ème', '4ème ML', '4ème MC', '3ème ML', '3ème MC',
+    '2nde AB', '2nde CD', '2nde G2', '1ère AB', '1ère C', '1ère D', '1ère G2',
+    'Tle AB', 'Tle C', 'Tle D', 'Tle G2'
+  ];
+
+  // Fonction pour obtenir les matières selon la classe
+  const getMatieresByClasse = (classe: string) => {
+    const collegeClasses = ['6ème', '5ème', '4ème ML', '4ème MC', '3ème ML', '3ème MC'];
+    const abClasses = ['2nde AB', '1ère AB', 'Tle AB'];
+    const cdClasses = ['2nde CD', '1ère C', '1ère D', 'Tle C', 'Tle D'];
+
+    if (collegeClasses.includes(classe)) {
+      return [
+        { key: 'Niveau_francais', label: 'Niveau en Français' },
+        { key: 'Niveau_mathematique', label: 'Niveau en Mathématiques' },
+        { key: 'Niveau_anglais', label: 'Niveau en Anglais' },
+        { key: 'Niveau_svt', label: 'Niveau en SVT' },
+        { key: 'Niveau_pct', label: 'Niveau en PCT' },
+        { key: 'Niveau_histgeo', label: 'Niveau en Histoire-Géographie' },
+        { key: 'Niveau_allemand', label: 'Niveau en Allemand' },
+        { key: 'Niveau_espagnol', label: 'Niveau en Espagnol' }
+      ];
+    } else if (abClasses.includes(classe)) {
+      return [
+        { key: 'Niveau_francais', label: 'Niveau en Français' },
+        { key: 'Niveau_anglais', label: 'Niveau en Anglais' },
+        { key: 'Niveau_svt', label: 'Niveau en SVT' },
+        { key: 'Niveau_philosophie', label: 'Niveau en Philosophie' },
+        { key: 'Niveau_mathematique', label: 'Niveau en Mathématiques' },
+        { key: 'Niveau_allemand', label: 'Niveau en Allemand' },
+        { key: 'Niveau_espagnol', label: 'Niveau en Espagnol' },
+        { key: 'Niveau_histgeo', label: 'Niveau en Histoire-Géographie' }
+      ];
+    } else if (classe === '2nde G2') {
+      return [
+        { key: 'Niveau_francais', label: 'Niveau en Français' },
+        { key: 'Niveau_anglais', label: 'Niveau en Anglais' },
+        { key: 'Niveau_economie', label: 'Niveau en Économie' },
+        { key: 'Niveau_comptabilite', label: 'Niveau en Comptabilité' },
+        { key: 'Niveau_TA', label: 'Niveau en TA' },
+        { key: 'Niveau_mathsfinanciere', label: 'Niveau en Mathématiques Financières' },
+        { key: 'Niveau_droit', label: 'Niveau en Droit' },
+        { key: 'Niveau_mathsgenerale', label: 'Niveau en Mathématiques Générales' }
+      ];
+    } else if (classe === '1ère G2') {
+      return [
+        { key: 'Niveau_anglais', label: 'Niveau en Anglais' },
+        { key: 'Niveau_francais', label: 'Niveau en Français' },
+        { key: 'Niveau_TA', label: 'Niveau en TA' },
+        { key: 'Niveau_comptagenerale', label: 'Niveau en Comptabilité Générale' },
+        { key: 'Niveau_comptausuelle', label: 'Niveau en Comptabilité Usuelle' },
+        { key: 'Niveau_mathsgenerale', label: 'Niveau en Mathématiques Générales' },
+        { key: 'Niveau_mathsfinanciere', label: 'Niveau en Mathématiques Financières' },
+        { key: 'Niveau_economie', label: 'Niveau en Économie' },
+        { key: 'Niveau_droit', label: 'Niveau en Droit' }
+      ];
+    } else if (classe === 'Tle G2') {
+      return [
+        { key: 'Niveau_francais', label: 'Niveau en Français' },
+        { key: 'Niveau_anglais', label: 'Niveau en Anglais' },
+        { key: 'Niveau_droit', label: 'Niveau en Droit' },
+        { key: 'Niveau_economie', label: 'Niveau en Économie' },
+        { key: 'Niveau_comptasociete', label: 'Niveau en Comptabilité des Sociétés' },
+        { key: 'Niveau_comptaanalytique', label: 'Niveau en Comptabilité Analytique' },
+        { key: 'Niveau_fiscalite', label: 'Niveau en Fiscalité' },
+        { key: 'Niveau_mathsfinanciere', label: 'Niveau en Mathématiques Financières' },
+        { key: 'Niveau_mathsgenerale', label: 'Niveau en Mathématiques Générales' },
+        { key: 'Niveau_philosophie', label: 'Niveau en Philosophie' }
+      ];
+    } else if (cdClasses.includes(classe)) {
+      return [
+        { key: 'Niveau_francais', label: 'Niveau en Français' },
+        { key: 'Niveau_anglais', label: 'Niveau en Anglais' },
+        { key: 'Niveau_pct', label: 'Niveau en PCT' },
+        { key: 'Niveau_svt', label: 'Niveau en SVT' },
+        { key: 'Niveau_histgeo', label: 'Niveau en Histoire-Géographie' },
+        { key: 'Niveau_philosophie', label: 'Niveau en Philosophie' },
+        { key: 'Niveau_mathematique', label: 'Niveau en Mathématiques' }
+      ];
+    }
+    return [];
+  };
+
+  // Fonction pour vérifier si tous les champs requis sont remplis
+  const validateRequiredFields = () => {
+    // Champs de base toujours requis
+    const baseFields = [
+      'NPI_enfant', 'Nom_enfant', 'Prenom_enfant', 'Sexe_enfant', 'Date_naissance',
+      'Classe_actuelle', 'Classe_precedente', 'Ecole_actuelle', 'Ecole_precedente',
+      'Matieres_preferes', 'Parent_tuteur', 'Centre_interet'
+    ];
+
+    // Vérifier les champs de base
+    for (const field of baseFields) {
+      if (!formData[field as keyof FormData]) {
+        return false;
+      }
+    }
+
+    // Vérifier les matières selon la classe actuelle
+    const matieres = getMatieresByClasse(formData.Classe_actuelle);
+    for (const matiere of matieres) {
+      if (!formData[matiere.key as keyof FormData]) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const handleSubmit = async () => {
-    if (
-      !formData.NPI_enfant ||
-      !formData.Nom_enfant ||
-      !formData.Prenom_enfant ||
-      !formData.Sexe_enfant ||
-      !formData.Date_naissance ||
-      !formData.Classe_actuelle ||
-      !formData.Classe_precedente ||
-      !formData.Ecole_actuelle ||
-      !formData.Ecole_precedente ||
-      !formData.Niveau_allemand ||
-      !formData.Niveau_anglais ||
-      !formData.Niveau_espagnol ||
-      !formData.Niveau_francais ||
-      !formData.Niveau_histgeo ||
-      !formData.Niveau_mathematique ||
-      !formData.Niveau_pct ||
-      !formData.Niveau_philosophie ||
-      !formData.Niveau_svt ||
-      !formData.Matieres_preferes ||
-      !formData.Parent_tuteur ||
-      !formData.Centre_interet
-    ) {
-      setError('Veuillez remplir tous les champs');
+    if (!validateRequiredFields()) {
+      setError('Veuillez remplir tous les champs requis');
       return;
     }
 
@@ -147,14 +260,6 @@ export default function AjouterEnfant() {
     }
   };
 
-  const [currentForm, setCurrentForm] = useState(1);
-
-  const classes = [
-    '6ème', '5ème', '4ème ML', '4ème MC', '3ème ML', '3ème MC',
-    '2nde AB', '2nde CD', '1ère AB', '1ère C', '1ère D',
-    'Tle AB', 'Tle C', 'Tle D'
-  ];
-
   const renderForm = () => {
     switch (currentForm) {
       case 1:
@@ -186,7 +291,7 @@ export default function AjouterEnfant() {
                 style={styles.input}
                 value={formData.Date_naissance}
                 onChangeText={(text) => handleInputChange('Date_naissance', text)}
-                placeholder="Date de naissance"
+                placeholder="Date de naissance (YYYY-MM-DD)"
                 keyboardType="numeric"
               />
               <TextInput
@@ -265,6 +370,8 @@ export default function AjouterEnfant() {
           </View>
         );
       case 3:
+        const matieres = getMatieresByClasse(formData.Classe_actuelle);
+        
         return (
           <View style={styles.formContainer}>
             <Text style={styles.formTitle}>Parcours scolaire récent</Text>
@@ -293,16 +400,28 @@ export default function AjouterEnfant() {
                     onChangeText={(text) => handleInputChange('Ecole_precedente', text)}
                   />
 
-                  {/* Niveaux */}
-                  <TextInput style={styles.input} placeholder="Niveau en Français" value={formData.Niveau_francais} onChangeText={(text) => handleInputChange('Niveau_francais', text)} keyboardType="phone-pad" />
-                  <TextInput style={styles.input} placeholder="Niveau en PCT" value={formData.Niveau_pct} onChangeText={(text) => handleInputChange('Niveau_pct', text)} keyboardType="phone-pad" />
-                  <TextInput style={styles.input} placeholder="Niveau en Mathématique" value={formData.Niveau_mathematique} onChangeText={(text) => handleInputChange('Niveau_mathematique', text)} keyboardType="phone-pad" />
-                  <TextInput style={styles.input} placeholder="Niveau en SVT" value={formData.Niveau_svt} onChangeText={(text) => handleInputChange('Niveau_svt', text)} keyboardType="phone-pad" />
-                  <TextInput style={styles.input} placeholder="Niveau en Anglais" value={formData.Niveau_anglais} onChangeText={(text) => handleInputChange('Niveau_anglais', text)} keyboardType="phone-pad" />
-                  <TextInput style={styles.input} placeholder="Niveau en Histoire et Géographie" value={formData.Niveau_histgeo} onChangeText={(text) => handleInputChange('Niveau_histgeo', text)} keyboardType="phone-pad" />
-                  <TextInput style={styles.input} placeholder="Niveau en Philosophie" value={formData.Niveau_philosophie} onChangeText={(text) => handleInputChange('Niveau_philosophie', text)} keyboardType="phone-pad" />
-                  <TextInput style={styles.input} placeholder="Niveau en Allemand" value={formData.Niveau_allemand} onChangeText={(text) => handleInputChange('Niveau_allemand', text)} keyboardType="phone-pad" />
-                  <TextInput style={styles.input} placeholder="Niveau en Espagnol" value={formData.Niveau_espagnol} onChangeText={(text) => handleInputChange('Niveau_espagnol', text)} keyboardType="phone-pad" />
+                  {/* Affichage conditionnel des matières selon la classe actuelle */}
+                  {formData.Classe_actuelle ? (
+                    <>
+                      <Text style={styles.sectionTitle}>
+                        Niveaux pour la classe {formData.Classe_actuelle}
+                      </Text>
+                      {matieres.map((matiere, index) => (
+                        <TextInput
+                          key={index}
+                          style={styles.input}
+                          placeholder={matiere.label}
+                          value={formData[matiere.key as keyof FormData]}
+                          onChangeText={(text) => handleInputChange(matiere.key as keyof FormData, text)}
+                          keyboardType="phone-pad"
+                        />
+                      ))}
+                    </>
+                  ) : (
+                    <Text style={styles.infoText}>
+                      Veuillez d'abord sélectionner une classe actuelle pour afficher les matières correspondantes.
+                    </Text>
+                  )}
                 </View>
               </ScrollView>
             </View>
@@ -423,5 +542,22 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat_400Regular',
     fontSize: 12,
     textAlign: 'center',
+  },
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#0a4191',
+    marginBottom: 10,
+    marginTop: 5,
+    textAlign: 'center',
+    fontFamily: 'Montserrat_700Bold',
+  },
+  infoText: {
+    fontSize: 12,
+    color: '#7F7F7F',
+    textAlign: 'center',
+    fontStyle: 'italic',
+    marginVertical: 20,
+    fontFamily: 'Montserrat_400Regular',
   },
 });

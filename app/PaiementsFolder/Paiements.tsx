@@ -156,7 +156,7 @@ export default function Paiements() {
       {loading ? (
         <ActivityIndicator size="large" color="#0a4191" style={{ marginTop: 30 }} />
       ) : paiements.length === 0 ? (
-        <Text style={{ textAlign: 'center', marginTop: 20, fontFamily: 'Montserrat_400Regular' }}>
+        <Text style={{ textAlign: 'center', marginTop: 20, fontFamily: 'Montserrat_400Regular', fontSize: 12 }}>
           Aucun paiement trouvé.
         </Text>
       ) : (
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0a4191',
   },
   tabText: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '600',
     color: '#282828',
     fontFamily: 'Montserrat_700Bold',
