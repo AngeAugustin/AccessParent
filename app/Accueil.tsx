@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   noEducators: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#7F7F7F',
     textAlign: 'center',
     marginTop: 20,
