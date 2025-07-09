@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ScrollView, Linking } from 'react-native';
 import { useFonts } from 'expo-font'; 
 import { Montserrat_400Regular, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
 import { useRouter } from 'expo-router';
@@ -230,7 +230,7 @@ export default function RegisterPage() {
                 {formData.acceptTerms && <Text style={styles.checkmark}>✓</Text>}
               </View>
               <Text style={styles.checkboxText}>
-                <TouchableOpacity onPress={() => router.push('/MenuFolder/Conditions')}>
+                <TouchableOpacity onPress={() => Linking.openURL('https://votre-site-web.com/conditions-utilisation')}>
                   <Text style={styles.linkText}>J'accepte les conditions d'utilisation et la politique de confidentialité</Text>
                 </TouchableOpacity>
               </Text>
